@@ -3,7 +3,8 @@ import colors from "colors";
 import "dotenv/config";
 import errorHandler from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
-import filmRoutes from "./routes/filmRoutes.js";
+import listRoutes from "./routes/listRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 const port = process.env.PORT || 5001;
 
 connectDB();
@@ -13,7 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/goals", filmRoutes);
+app.use("/api/lists", listRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 
