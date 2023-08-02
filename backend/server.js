@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import colors from "colors";
 import "dotenv/config";
 import errorHandler from "./middleware/errorMiddleware.js";
@@ -8,6 +9,8 @@ import interactionRoutes from "./routes/interactionRoutes.js";
 import listRoutes from "./routes/listRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 const port = process.env.PORT || 5001;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 connectDB();
 
