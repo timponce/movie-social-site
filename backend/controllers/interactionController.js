@@ -67,16 +67,14 @@ const updateInteraction = asyncHandler(async (req, res) => {
     throw new Error("Interaction not found");
   }
 
-  const user = await User.findById(req.user.id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if user owns interaction
-  if (interaction.user.toString() !== user.id) {
+  if (interaction.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -109,16 +107,14 @@ const deleteInteraction = asyncHandler(async (req, res) => {
     throw new Error("Interaction not found");
   }
 
-  const user = await User.findById(req.user.id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if user owns interaction
-  if (interaction.user.toString() !== user.id) {
+  if (interaction.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }

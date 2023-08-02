@@ -36,16 +36,14 @@ const updateList = asyncHandler(async (req, res) => {
     throw new Error("List not found");
   }
 
-  const user = await User.findById(req.user.id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if user owns list
-  if (list.user.toString() !== user.id) {
+  if (list.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -72,16 +70,14 @@ const deleteList = asyncHandler(async (req, res) => {
     throw new Error("List not found");
   }
 
-  const user = await User.findById(req.user.id);
-
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
   // Check if user owns list
-  if (list.user.toString() !== user.id) {
+  if (list.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }
