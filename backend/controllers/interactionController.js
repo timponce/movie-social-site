@@ -14,15 +14,40 @@ const getInteractions = asyncHandler(async (req, res) => {
 // @route   POST /api/interactions
 // @access  Private
 const setInteraction = asyncHandler(async (req, res) => {
+  // Check film ID in TMDB
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${req.body.film}`,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + process.env.TMDB_TOKEN,
+      },
+    }
+  );
+  if (response.status !== 200) {
+    res.status(400);
+    throw new Error("Film ID not found in TMDB API");
+  }
+
   if (!req.body.watched && !req.body.rating && !req.body.comments) {
     res.status(400);
     throw new Error(
       "Please indicate some interaction: watched, rating, or comments"
     );
   }
+
+  // Check if interaction with film already exits for user
+  const oldInteraction = await Interaction.findOne({
+    film: req.body.film,
+  }).exec();
+  if (oldInteraction) {
+    res.status(400);
+    throw new Error("Interaction with Film already exists");
+  }
+
   const interaction = await Interaction.create({
     user: req.user.id,
-    // film: req.film.id,
+    film: req.body.film,
     watched: req.body.watched,
     rating: req.body.rating,
     comments: req.body.comments,
@@ -56,12 +81,16 @@ const updateInteraction = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
+  // Check for same film id
+  if (interaction.film.toString() !== req.body.film) {
+    res.status(400);
+    throw new Error("Old and new interactions' film IDs do not match");
+  }
+
   const updatedInteraction = await Interaction.findByIdAndUpdate(
     req.params.id,
     {
-      watched: req.body.watched,
-      rating: req.body.rating,
-      comments: req.body.comments,
+      $set: req.body,
     },
     { new: true }
   );
@@ -75,7 +104,7 @@ const updateInteraction = asyncHandler(async (req, res) => {
 const deleteInteraction = asyncHandler(async (req, res) => {
   const interaction = await Interaction.findById(req.params.id);
 
-  if (!list) {
+  if (!interaction) {
     res.status(400);
     throw new Error("Interaction not found");
   }
