@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import colors from "colors";
 import "dotenv/config";
 import errorHandler from "./middleware/errorMiddleware.js";
