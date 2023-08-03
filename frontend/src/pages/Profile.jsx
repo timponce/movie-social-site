@@ -6,7 +6,7 @@ import ListItem from "../components/ListItem";
 import { getLists, reset } from "../features/lists/listSlice";
 import Spinner from "../components/Spinner";
 
-function Dashboard() {
+function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -53,4 +53,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Profile;
